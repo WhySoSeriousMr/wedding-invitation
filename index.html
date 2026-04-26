@@ -8,6 +8,359 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
+	#welcome-screen {
+    position: fixed;
+    inset: 0;
+    background: #f5f0e8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    overflow: hidden;
+}
+
+.envelope {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: #b19672;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+/* Линии конверта */
+.envelope::before,
+.envelope::after {
+    content: '';
+    position: absolute;
+    width: 150%;
+    height: 2px;
+    background: rgba(120, 95, 65, 0.55);
+    left: -25%;
+    top: 50%;
+    transform-origin: center;
+}
+
+.envelope::before {
+    transform: rotate(28deg);
+}
+
+.envelope::after {
+    transform: rotate(-28deg);
+}
+
+/* Вертикальная линия */
+.envelope .center-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 100%;
+    background: rgba(120, 95, 65, 0.25);
+}
+
+/* Заголовок */
+.envelope-text {
+    position: absolute;
+    top: 55px;
+    width: 100%;
+    text-align: center;
+    z-index: 2;
+}
+
+.envelope-text h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 5rem;
+    color: #fff;
+    font-weight: 400;
+    margin-bottom: 35px;
+}
+
+.envelope-text p {
+    font-size: 2rem;
+    letter-spacing: 8px;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Печать */
+.seal-button {
+    position: absolute;
+    left: 50%;
+    top: 68%;
+    transform: translate(-50%, -50%);
+    width: 210px;
+    height: 210px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background:
+        radial-gradient(circle at 35% 35%, #f9d2a7, #d88d4b 65%, #9f5624 100%);
+    box-shadow:
+        0 20px 45px rgba(0,0,0,0.35),
+        inset 0 8px 12px rgba(255,255,255,0.45),
+        inset 0 -12px 18px rgba(0,0,0,0.25);
+    z-index: 5;
+    transition: all .4s ease;
+}
+
+.seal-button::before {
+    content: '';
+    position: absolute;
+    inset: 18px;
+    border-radius: 50%;
+    border: 4px solid rgba(120, 55, 20, 0.45);
+}
+
+.seal-button:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow:
+        0 28px 60px rgba(0,0,0,0.4),
+        inset 0 8px 12px rgba(255,255,255,0.45),
+        inset 0 -12px 18px rgba(0,0,0,0.25);
+}
+
+.seal-button span {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #4d260d;
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 768px) {
+    .envelope-text h1 {
+        font-size: 3rem;
+    }
+
+    .envelope-text p {
+        font-size: 1.1rem;
+        letter-spacing: 4px;
+    }
+
+    .seal-button {
+        width: 150px;
+        height: 150px;
+        top: 65%;
+    }
+
+    .seal-button span {
+        font-size: 1.3rem;
+    }
+}
+
+.card-front::before,
+.card-front::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border: 2px solid rgba(176,141,87,0.25);
+    border-radius: 50%;
+}
+
+.card-front::before {
+    top: -80px;
+    left: -80px;
+}
+
+.card-front::after {
+    bottom: -80px;
+    right: -80px;
+}
+
+.ornament {
+    font-size: 5rem;
+    color: #b08d57;
+    margin-bottom: 25px;
+    animation: spin 12s linear infinite;
+}
+
+.card-front h1 {
+    font-size: 3.2rem;
+    line-height: 1.2;
+    color: #7a5a40;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+.card-front h1 span {
+    display: block;
+    font-size: 2.4rem;
+    margin: 10px 0;
+    color: #b08d57;
+}
+
+.card-front p {
+    font-size: 1.25rem;
+    color: #6f543e;
+    margin-bottom: 45px;
+    letter-spacing: 1px;
+}
+
+.open-text {
+    padding: 16px 35px;
+    background: linear-gradient(135deg, #b08d57, #8c6b4f);
+    color: white;
+    border-radius: 50px;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    box-shadow: 0 10px 25px rgba(176,141,87,0.35);
+}
+
+@keyframes floating {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+    .invitation-card {
+        width: 90%;
+        height: 480px;
+    }
+
+    .card-front h1 {
+        font-size: 2.5rem;
+    }
+}
+
+#welcome-screen.hidden{
+    opacity: 0;
+    visibility: hidden;
+}
+
+.welcome-content{
+    text-align: center;
+    animation: zoomFade 1.5s ease;
+    padding: 40px;
+}
+
+.ornament{
+    font-size: 5rem;
+    color: #b08d57;
+    margin-bottom: 20px;
+    animation: rotate 8s linear infinite;
+}
+
+.welcome-content h1{
+    font-size: 4.5rem;
+    color: #8c6b4f;
+    margin-bottom: 20px;
+    letter-spacing: 5px;
+}
+
+.welcome-content p{
+    font-size: 1.4rem;
+    color: #6f543e;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+}
+
+#openInvitation{
+    padding: 18px 45px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 50px;
+    background: #8c6b4f;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all .3s ease;
+}
+
+#openInvitation:hover{
+    background: #6f543e;
+    transform: translateY(-3px);
+}
+
+@keyframes zoomFade{
+    from{
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to{
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes rotate{
+    from{transform: rotate(0deg);}
+    to{transform: rotate(360deg);}
+}
+	/* ВСТАВЬТЕ в style.css */
+
+#loader{
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #f8f4ef 0%, #efe4d6 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+}
+
+#loader.hidden{
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader-content{
+    text-align: center;
+    animation: fadeZoom 2s ease;
+}
+
+.loader-ornament{
+    font-size: 4rem;
+    color: #b08d57;
+    margin-bottom: 25px;
+    animation: rotateGlow 4s linear infinite;
+}
+
+.loader-content h1{
+    font-size: 4rem;
+    font-weight: 300;
+    color: #8c6b4f;
+    letter-spacing: 6px;
+    margin-bottom: 15px;
+}
+
+.loader-content p{
+    font-size: 1.3rem;
+    color: #6f543e;
+    letter-spacing: 2px;
+}
+
+@keyframes fadeZoom{
+    from{
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to{
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes rotateGlow{
+    0%{
+        transform: rotate(0deg) scale(1);
+    }
+    50%{
+        transform: rotate(180deg) scale(1.15);
+    }
+    100%{
+        transform: rotate(360deg) scale(1);
+    }
+}
         *{
             margin:0;
             padding:0;
@@ -220,6 +573,18 @@
     </style>
 </head>
 <body>
+<div id="welcome-screen">
+    <div class="envelope" id="openInvitation">
+        <div class="envelope-text">
+            <h1>Шақыру билеті</h1>
+            <p>ҮЙЛЕНУ ТОЙҒА ШАҚЫРУ</p>
+        </div>
+
+        <button class="seal-button">
+            <span>БАСЫҢЫЗ</span>
+        </button>
+    </div>
+</div>
 
     <button class="music-btn" id="musicBtn">
         <i class="fas fa-music"></i>
@@ -233,7 +598,7 @@
         <div class="hero-content">
             <h1>Арман & Сәнбибі</h1>
             <p>Приглашаем Вас на нашу свадьбу</p>
-            <div class="date">15 Августа 2026</div>
+            <div class="date">27 Июнь 2026</div>
         </div>
     </section>
 
@@ -262,7 +627,7 @@
     <section class="details">
         <h2>Детали торжества</h2>
         <div class="details-card">
-            <p><i class="fas fa-calendar"></i> 15 августа 2026</p>
+            <p><i class="fas fa-calendar"></i> 27 июнь 2026</p>
             <p><i class="fas fa-clock"></i> 18:00</p>
             <p><i class="fas fa-map-marker-alt"></i> Grand Hall, Алматы</p>
         </div>
@@ -295,41 +660,66 @@
     </footer>
 
     <script>
-        const targetDate = new Date("August 15, 2026 18:00:00").getTime();
+const welcomeScreen = document.getElementById('welcome-screen');
+const openBtn = document.getElementById('openInvitation');
+const music = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
 
-        function updateTimer() {
-            const now = new Date().getTime();
-            const diff = targetDate - now;
+document.body.style.overflow = 'hidden';
 
-            document.getElementById('days').innerText =
-                Math.floor(diff / (1000 * 60 * 60 * 24));
+openBtn.addEventListener('click', () => {
+    welcomeScreen.classList.add('hidden');
+    document.body.style.overflow = 'auto';
 
-            document.getElementById('hours').innerText =
-                Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    // 🎵 запускаем музыку при открытии
+    if (music) {
+        music.play().then(() => {
+            musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        }).catch(() => {});
+    }
+});
 
-            document.getElementById('minutes').innerText =
-                Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+// кнопка музыки
+musicBtn.addEventListener('click', () => {
+    if (music.paused) {
+        music.play();
+        musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    } else {
+        music.pause();
+        musicBtn.innerHTML = '<i class="fas fa-music"></i>';
+    }
+});
 
-            document.getElementById('seconds').innerText =
-                Math.floor((diff % (1000 * 60)) / 1000);
-        }
+// правильная иконка при загрузке
+window.addEventListener('load', () => {
+    musicBtn.innerHTML = '<i class="fas fa-music"></i>';
+});
 
-        setInterval(updateTimer, 1000);
-        updateTimer();
+// таймер (без изменений)
+const targetDate = new Date("June 27, 2026 18:00:00").getTime();
 
-        const music = document.getElementById('bgMusic');
-        const btn = document.getElementById('musicBtn');
+function updateTimer() {
+    const now = new Date().getTime();
+    const diff = targetDate - now;
 
-        btn.addEventListener('click', () => {
-            if (music.paused) {
-                music.play();
-                btn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                music.pause();
-                btn.innerHTML = '<i class="fas fa-music"></i>';
-            }
-        });
-    </script>
+    if (diff <= 0) return;
+
+    document.getElementById('days').textContent =
+        Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    document.getElementById('hours').textContent =
+        Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    document.getElementById('minutes').textContent =
+        Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    document.getElementById('seconds').textContent =
+        Math.floor((diff % (1000 * 60)) / 1000);
+}
+
+updateTimer();
+setInterval(updateTimer, 1000);
+</script>
 
 </body>
 </html>
