@@ -210,7 +210,25 @@
       transform: rotateX(180deg);
     }
 
-    .wax-seal {$1font-size: 0;$2}
+        .wax-seal {
+      position: absolute;
+      top: 132px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      z-index: 6;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 35% 30%, #d8b984, #9d7334 60%, #7d5424);
+      color: white;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0;
+      box-shadow: 0 12px 25px rgba(74,48,33,.28), inset 0 2px 8px rgba(255,255,255,.25);
+      border: 2px solid rgba(255,255,255,.35);
+    }
 
     .wax-seal::before {
       content: '✦';
@@ -1133,7 +1151,7 @@
     <div class="envelope-wrap" id="openInvitation" onclick="openSite()">
       <div class="envelope">
         <div class="envelope-flap"></div>
-        <div class="wax-seal"></div>
+        
       </div>
 
       <div class="welcome-card">
@@ -1336,9 +1354,9 @@
           <div class="form-group">
             <textarea id="guestMessage" placeholder="Тілек немесе хабарлама"></textarea>
           </div>
-          <button class="open-btn" type="submit" style="width:100%; justify-content:center;">
-            <i class="fa-brands fa-whatsapp"></i>
-            WhatsApp арқылы жіберу
+          <button class="open-btn" id="sendAnswerBtn" type="submit" style="width:100%; justify-content:center;">
+            <i class="fa-regular fa-paper-plane"></i>
+            Жіберу
           </button>
         </form>
       </div>
@@ -1425,21 +1443,61 @@
       });
 
       const rsvpForm = document.getElementById('rsvpForm');
-      if (rsvpForm) {
+      const sendAnswerBtn = document.getElementById('sendAnswerBtn');
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2U37y0pOkuQvMYtwoLmOXYp-3hkmCes-Jj-5LgwbzQe8eiqfTvlN8W8uZpINSPDaN/exec';
+
+      if (rsvpForm && sendAnswerBtn) {
         rsvpForm.addEventListener('submit', function (event) {
           event.preventDefault();
 
           const name = document.getElementById('guestName').value.trim();
-          const answer = document.getElementById('guestAnswer').value;
+          const attendance = document.getElementById('guestAnswer').value;
           const message = document.getElementById('guestMessage').value.trim();
 
-          const phoneNumber = '77000000000';
-          const text = 'Сәлеметсіз бе!%0A%0A' +
-            'Атым: ' + encodeURIComponent(name) + '%0A' +
-            'Жауабым: ' + encodeURIComponent(answer) + '%0A' +
-            'Тілек: ' + encodeURIComponent(message || '-');
+          if (!name || !attendance) {
+            alert('Өтінеміз, барлық өрістерді толтырыңыз!');
+            return;
+          }
 
-          window.open('https://wa.me/' + phoneNumber + '?text=' + text, '_blank');
+          sendAnswerBtn.innerHTML = 'Жіберілуде...';
+          sendAnswerBtn.disabled = true;
+          sendAnswerBtn.style.opacity = '0.75';
+          sendAnswerBtn.style.cursor = 'not-allowed';
+
+          fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: name,
+              attendance: attendance,
+              message: message,
+              date: new Date().toLocaleString('kk-KZ')
+            })
+          })
+          .then(function () {
+            sendAnswerBtn.innerHTML = 'Жіберілді ✓';
+            sendAnswerBtn.style.opacity = '1';
+
+            document.getElementById('guestName').value = '';
+            document.getElementById('guestAnswer').value = '';
+            document.getElementById('guestMessage').value = '';
+
+            setTimeout(function () {
+              sendAnswerBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Жіберу';
+              sendAnswerBtn.disabled = false;
+              sendAnswerBtn.style.cursor = 'pointer';
+            }, 2500);
+          })
+          .catch(function () {
+            alert('Қате шықты, қайталап көріңіз.');
+            sendAnswerBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Жіберу';
+            sendAnswerBtn.disabled = false;
+            sendAnswerBtn.style.opacity = '1';
+            sendAnswerBtn.style.cursor = 'pointer';
+          });
         });
       }
     });
